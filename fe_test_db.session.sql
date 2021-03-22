@@ -167,3 +167,53 @@ VALUES (1, 1, true),
   (3, 2, true);
 /*  */
 
+
+CREATE TABLE "smartphones" (
+  "id" serial PRIMARY KEY,
+  "manufacturer" varchar(64),
+  "model" varchar(64),
+  "OS" varchar(64),
+  "RAM" int,
+  "price" decimal(16, 2),
+  UNIQUE ("manufacturer", "model"),
+  CHECK ("manufacturer" != '' AND "model" !='' AND "RAM" > 0 AND "price" > 0)
+)
+
+SELECT *
+FROM "users"
+WHERE "is_male" = true
+
+SELECT *
+FROM "users"
+WHERE "is_male" = false
+
+SELECT *
+FROM "users"
+WHERE "birthday" < current_date - make_interval (years => 18)
+
+SELECT *
+FROM "users"
+WHERE "birthday" < current_date - make_interval (years => 18) AND "is_male" = false
+
+SELECT *
+FROM "users"
+WHERE age("birthday") BETWEEN make_interval (years => 20) AND make_interval (years => 40)
+
+SELECT *
+FROM "users"
+WHERE age("birthday") > make_interval (years => 20) AND "height" > 1.8
+
+SELECT *
+FROM "users"
+WHERE extract (month from "birthday") = 9
+
+SELECT *
+FROM "users"
+WHERE extract (month from "birthday") = 10 AND extract (day from "birthday") = 1
+
+SELECT 
+"first_name",
+"last_name",
+char_length(concat("first_name",' ',"last_name")) AS "Name leght"
+FROM "users"
+WHERE char_length(concat("first_name",' ',"last_name")) > 15

@@ -2,7 +2,7 @@
   "baseURL": "https://randomuser.me/api/",
   "get": {
     "users": {
-      "results": 100,
+      "results": 1000,
       "seed": "api_key",
       "page": 1
     }
