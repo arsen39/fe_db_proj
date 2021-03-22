@@ -217,3 +217,34 @@ SELECT
 char_length(concat("first_name",' ',"last_name")) AS "Name leght"
 FROM "users"
 WHERE char_length(concat("first_name",' ',"last_name")) > 15
+
+SELECT avg(height)
+FROM "users"
+
+SELECT avg("height"), "is_male"
+FROM "users"
+GROUP BY "is_male"
+
+SELECT min("height") AS "min",
+max("height") AS "max",
+avg("height") AS "avg",
+  "is_male"
+FROM "users"
+GROUP BY "is_male"
+
+SELECT count (*)
+FROM "users"
+WHERE "birthday" = '1970-01-01'
+
+SELECT count (*) AS "Count", "first_name" AS "Name"
+FROM "users"
+GROUP BY "first_name"
+
+SELECT count (*) 
+FROM "users"
+WHERE extract(years from age("birthday")) BETWEEN 20 AND 30
+
+
+
+
+
