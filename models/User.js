@@ -9,14 +9,17 @@ module.exports = class User {
   }
 
   static async bulkCreate (users) {
-    return this._client.query(`
-    INSERT INTO "users" (
-      "first_name",
-      "last_name",
+    const { rows } = await this._client.query(`
+    INSERT INTO "${this._tableName}" (
+      "firstName",
+      "lastName",
       "email",
-      "is_male",
+      "isMale",
       "birthday",
       "height"
-    ) VALUES ${mapUsers(users)};`);
+    ) 
+    VALUES ${mapUsers(users)}
+    RETURNING *;`);
+    return rows;
   }
 };

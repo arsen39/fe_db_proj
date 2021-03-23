@@ -15,8 +15,6 @@ module.exports.loadUsers = async (options = {}) => {
     ...options
   };
 
-  console.log(querystring.stringify(queryParams));
-
   const {
     data: { results: users }
   } = await http.get(`?${querystring.stringify(queryParams)}`);
