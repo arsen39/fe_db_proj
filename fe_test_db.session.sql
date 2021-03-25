@@ -121,6 +121,159 @@ SELECT count (*)
 FROM "users"
 WHERE extract(years from age("birthday")) BETWEEN 20 AND 30
 
+SELECT sum (quantity) AS "Selled phones"
+FROM "phones_to_orders"
+
+SELECT sum (quantity) AS "Phones in stock"
+FROM "phones"
+
+SELECT avg (price) AS "Midle price"
+FROM "phones"
+
+SELECT avg (price) AS "Midle price", "brand"
+FROM "phones"
+GROUP BY "brand"
+
+SELECT sum (price*quantity) AS "Sum of prices"
+FROM "phones"
+WHERE "price" BETWEEN 10000 AND 20000
+
+SELECT count (model) AS "Model count", "brand"
+FROM "phones"
+GROUP BY "brand"
+
+SELECT count (model) AS "Model count", "brand"
+FROM "phones"
+GROUP BY "brand"
+
+SELECT count (*) AS "User orders count", "userId"
+FROM "orders"
+GROUP BY "userId"
+
+SELECT avg (price) AS "Midle price", "brand"
+FROM "phones"
+WHERE "brand" = 'IPhone'
+GROUP BY "brand"
+
+SELECT "firstName" AS "First Name",
+"lastName" AS "Last Name",
+extract(years from age("birthday")) AS "Age"
+FROM "users"
+ORDER BY extract(years from age("birthday")), "firstName"
+
+SELECT *
+FROM "users"
+WHERE "firstName" ILIKE 'J%' AND "lastName" ILIKE 'D%'
+
+SELECT max(char_length(concat("firstName",' ',"lastName")))
+FROM "users"
+
+SELECT count (*) AS "Count", char_length(concat("firstName",' ',"lastName")) AS "Lenght"
+FROM "users"
+GROUP BY "Lenght"
+HAVING char_length(concat("firstName",' ',"lastName")) > 18
+
+SELECT * FROM "users"
+WHERE "email" ILIKE 'm%'
+
+SELECT sum(p.price*pto.quantity) "Price", o.id "Order ID" 
+FROM "orders" o
+JOIN "phones_to_orders" pto ON o.id = pto."orderId"
+JOIN "phones" p ON pto."phoneId" = p.id
+GROUP BY o.id
+ORDER BY o.id
+
+-- _____________________________________
+
+SELECT o.id "Order ID", p.brand "Brand", p.model "Model"
+FROM "phones" p
+JOIN "phones_to_orders" pto ON pto."phoneId" = p.id
+JOIN "orders" o ON pto."orderId" = o.id
+
+SELECT count(o.id) "Order of amount", u.email "User Email"
+FROM "users" u
+JOIN "orders" o ON o."userId" = u.id
+GROUP BY u.email
+
+SELECT o.id "Order ID", sum(pto.quantity) "Good's amount"
+FROM "orders" o
+JOIN "phones_to_orders" pto ON pto."orderId" = o.id
+GROUP BY o.id
+ORDER BY o.id
+
+SELECT *
+FROM (SELECT sum(pto.quantity) "Sells amount", p.brand, p.model
+FROM "phones" p
+JOIN "phones_to_orders" pto ON pto."phoneId" = p.id
+JOIN "orders" o ON pto."orderId" = o.id
+GROUP BY p.id) st
+ORDER BY st."Sells amount" DESC LIMIT 1
+
+SELECT count(st.model) amount, st.email
+FROM (SELECT u.id, u."firstName", u."lastName", u."email", p.brand, p.model
+FROM "users" u
+JOIN "orders" o ON u.id = o."userId"
+JOIN "phones_to_orders" pto ON pto."orderId" = o.id
+JOIN "phones" p ON pto."phoneId" = p.id
+GROUP BY p.brand, p.model, u.id, u."firstName", u."lastName", u."email"
+ORDER BY u.id) st
+GROUP BY st."email"
+ORDER BY amount DESC
+
+
+WITH "orders_with_costs" AS (
+  SELECT pto."orderId" "Order ID", sum(p.price*pto.quantity) "Order cost" 
+  FROM phones_to_orders pto
+  JOIN phones p ON pto."phoneId" = p.id
+  GROUP BY pto."orderId")
+SELECT owc."Order ID", owc."Order cost"
+FROM "orders_with_costs" owc
+WHERE owc."Order cost" > (
+  SELECT avg(owc."Order cost")
+  FROM "orders_with_costs" owc
+)
+ORDER BY owc."Order ID"
+
+
+WITH "user_with_amount" AS (
+  SELECT u.email "Email", count(o.id) "Orders amount"
+  FROM "users" u
+  JOIN "orders" o ON u.id = o."userId"
+  GROUP BY u.email
+)
+SELECT uwa."Email", uwa."Orders amount"
+FROM "user_with_amount" uwa
+WHERE uwa."Orders amount" > (
+  SELECT avg(uwa."Orders amount")
+  FROM "user_with_amount" uwa
+)
+
+
+SELECT concat(p.brand, ' ', p.model) "Phone", pto."orderId"
+FROM phones p
+JOIN phones_to_orders pto ON pto."phoneId" = p.id
+GROUP BY concat(p.brand, ' ', p.model), pto."orderId"
+ORDER BY concat(p.brand, ' ', p.model)
+
+
+WITH "user_with_amount" AS (
+  SELECT u.email "Email", count(o.id) "Orders amount"
+  FROM "users" u
+  JOIN "orders" o ON u.id = o."userId"
+  GROUP BY u.email
+)
+SELECT uwa."Email", uwa."Orders amount"
+FROM "user_with_amount" uwa
+WHERE uwa."Orders amount" = (
+  SELECT min(uwa."Orders amount")
+  FROM "user_with_amount" uwa
+)
+
+
+
+
+
+
 
 
 

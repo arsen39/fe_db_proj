@@ -47,3 +47,11 @@ CREATE TABLE phones_to_orders (
   quantity int NOT NULL CHECK (quantity > 0) DEFAULT 1,
   PRIMARY KEY ("orderId", "phoneId")
 );
+
+CREATE TABLE tasks (
+  id serial PRIMARY KEY,
+  "userId" int REFERENCES users,
+  "taskText" varchar (1000) NOT NULL,
+  "isDone" boolean NOT NULL,
+  "createdAt" timestamp NOT NULL DEFAULT current_timestamp
+)

@@ -23,7 +23,7 @@ async function start () {
   /* smell code >>> */
   /* СОЗДАЕМ ЗАКАЗ */
   const ordersValuesString = users
-    .map(u => new Array(_.random(1, 5, false)).map(() => `(${u.id})`).join(','))
+    .map(u => new Array(_.random(1, 5, false)).fill(null).map(() => `(${u.id})`).join(','))
     .join(',');
 
   const { rows: orders } = await client.query(`
@@ -35,7 +35,7 @@ async function start () {
   /* НАПОЛНЯЕМ ЗАКАЗ ТЕЛЕФОНАМИ */
   const phonesToOrdersValuesString = orders
     .map(o => {
-      const arr = new Array(_.random(1, phones.length)).map(
+      const arr = new Array(_.random(1, phones.length)).fill(null).map(
         () => phones[_.random(1, phones.length - 1)]
       );
 
